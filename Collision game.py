@@ -8,6 +8,7 @@ class Player:
         # setting the internal variables at start-up
         self.x = screen_size/2
         self.y = screen_size/2
+        self.rect = pygame.Rect(self.x-50, self.y-50, 100, 100)
         self.speed = 2.5
     def move_x(self, value):
         self.x += value
@@ -27,17 +28,21 @@ class Player:
             #pygame.draw.line(screen, RED, (x,y), (x+120, y+60), 20) # draw a line - screen, colour, 1st coord, 2nd coord, width in pixels
             #pygame.draw.ellipse(screen, RED, (x, y, 200, 100), 0) #draw an ellipse - screen, colour, ( top left x coord, top left y coord , width, height), fill
             pygame.draw.polygon(screen, RED, points=[(x+10,y-40), (x+20,y-52), (x+56,y-22), (x+46,y-10)])
+            self.rect = pygame.Rect(x-50, y-50, 100, 100)
+            
         elif skin == "crashed" or skin == 1:
-            pygame.draw.circle(screen, RED, [x,y], 30, 5) # draw a circle - centre x, centre y, radius, line width
+            pygame.draw.circle(screen, (255, 0, 0), [x,y], 30, 5) # draw a circle - centre x, centre y, radius, line width
 
 class Enemy:
     def __init__(self):
         self.x = random.randint(-screen_size, screen_size)
         self.y = random.randint(-screen_size, screen_size)
+        self.rect = self.rect = pygame.Rect(self.x-50, self.y-50, 100, 100)
         self.speed = 1
     def move_x(self, value):
         self.x += value
     def move_y(self, value):
+        
         self.y += value
     def draw(self):
         x,y = self.x, self.y
@@ -47,11 +52,13 @@ class Enemy:
         GREEN = (0, 0, 255)
 
         pygame.draw.circle(screen, RED, [x,y], 30, 5) # draw a circle - centre x, centre y, radius, line width
+        self.rect = pygame.Rect(x-50, y-50, 100, 100)
 
 class Point:
     def __init__(self):
         self.x = random.randint(-screen_size, screen_size)
         self.y = random.randint(-screen_size, screen_size)
+        self.rect = pygame.Rect(self.x-50, self.y-50, 100, 100)
     def draw(self):
         x,y = self.x, self.y
     
@@ -60,6 +67,7 @@ class Point:
         GREEN = (0, 0, 255)
 
         pygame.draw.circle(screen, BLUE, [x,y], 30, 5) # draw a circle - centre x, centre y, radius, line width
+        self.rect = pygame.Rect(x-50, y-50, 100, 100)
         
 ########################################################
 # main code
@@ -91,10 +99,11 @@ while running:
         player.move_x(-player.speed)
     if keys[pygame.K_RIGHT]:
         player.move_x(player.speed)
-
+    
     count += 1
     if count % 60 == 0:
         points.append(Point())
+        enemies.append(Enemy())
     if count % 300 == 0:
         enemies.append(Enemy())
     # draw to the screen
