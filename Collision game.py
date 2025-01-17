@@ -6,14 +6,14 @@ import random
 class Player:
     def __init__(self):
         # setting the internal variables at start-up
-        self.x = 0
-        self.y = 0
+        self.x = screen_size/2
+        self.y = screen_size/2
         self.speed = 2.5
     def move_x(self, value):
         self.x += value
     def move_y(self, value):
         self.y += value
-    def draw(self, skin = "safe"):
+    def draw(self, skin = "safe"): # safe by default
         x,y = self.x, self.y
         
         RED = (255, 0, 0)
@@ -47,6 +47,19 @@ class Enemy:
         GREEN = (0, 0, 255)
 
         pygame.draw.circle(screen, RED, [x,y], 30, 5) # draw a circle - centre x, centre y, radius, line width
+
+class Point:
+    def __init__(self):
+        self.x = random.randint(-screen_size, screen_size)
+        self.y = random.randint(-screen_size, screen_size)
+    def draw(self):
+        x,y = self.x, self.y
+    
+        RED = (255, 0, 0) # set up your own colours
+        BLUE = (0, 255, 0)
+        GREEN = (0, 0, 255)
+
+        pygame.draw.circle(screen, BLUE, [x,y], 30, 5) # draw a circle - centre x, centre y, radius, line width
         
 ########################################################
 # main code
@@ -58,7 +71,9 @@ clock = pygame.time.Clock()
 screen_size = 750
 screen = pygame.display.set_mode([screen_size, screen_size])
 player = Player()
-enemy = Enemy()
+enemies = []
+points = []
+count = 0
 # Run until the user asks to quit
 running = True
 while running:
@@ -76,11 +91,20 @@ while running:
         player.move_x(-player.speed)
     if keys[pygame.K_RIGHT]:
         player.move_x(player.speed)
+
+    count += 1
+    if count % 60 == 0:
+        points.append(Point())
+    if count % 300 == 0:
+        enemies.append(Enemy())
     # draw to the screen
     safeColour = (47, 181, 65) # add the safe background colour 
     screen.fill(safeColour)
     player.draw()
-    enemy.draw()
+    for enemy in enemies:
+        enemy.draw()
+    for point in points:
+        point.draw()
     
     # Flip the display
     pygame.display.flip()
