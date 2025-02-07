@@ -34,11 +34,16 @@ class Player:
             rects.append(pygame.draw.rect(screen, RED, pygame.Rect(x-35, y-35, 30, 5)))
             rects.append(pygame.draw.polygon(screen, GOLD, [(x+20, y-15), (x+20, y+5), (x+40, y+5)]))
             rects.append(pygame.draw.circle(screen, RED, [x-25, y+10], 10))
-            rects.append(pygame.draw.circle(screen, RED, [x+5, y+10], 5))
+            rects.append(pygame.draw.circle(screen, RED, [x+5, y+10], 5)) 
             rects.append(pygame.draw.circle(screen, RED, [x+20, y+10], 5))
         elif skin == "crashed" or skin == 1:
-            # todo: make crashed
-            pass
+            rects.append(pygame.draw.rect(screen, RED, pygame.Rect(x-20, y-15, 40, 20)))
+            rects.append(pygame.draw.rect(screen, RED, pygame.Rect(x-30, y-30, 20, 35)))
+            rects.append(pygame.draw.rect(screen, RED, pygame.Rect(x-35, y-35, 30, 5)))
+            rects.append(pygame.draw.polygon(screen, RED, [(x+20, y-15), (x+20, y+5), (x+40, y+5)]))
+            rects.append(pygame.draw.circle(screen, RED, [x-25, y+10], 10))
+            rects.append(pygame.draw.circle(screen, RED, [x+5, y+10], 5)) 
+            rects.append(pygame.draw.circle(screen, RED, [x+20, y+10], 5))
 
         self.rect = self.rect.unionall(rects) # combines all the Rect objects into one hitbox rectangle
 
@@ -48,50 +53,40 @@ class Enemy:
         self.y = 0#random.randint(-screen_size, screen_size)
         self.rect = self.rect = pygame.Rect(self.x-50, self.y-50, 100, 100)
         self.speed = 1
-##    def move_x(self, value):
-##        self.x += value
+        self.surf = pygame.image.load("enemy.png").convert_alpha()
+        self.rect = self.surf.get_rect(center=(self.x, 0))
     def move(self, value):
         self.y += value
     def draw(self):
-        x,y = self.x, self.y
-    
-        RED = (255, 0, 0) # set up your own colours
-        BLUE = (0, 255, 0)
-        GOLD = (0, 0, 255)
-
-        pygame.draw.circle(screen, RED, [x,y], 30, 5) # draw a circle - centre x, centre y, radius, line width
-        self.rect = pygame.Rect(x-50, y-50, 100, 100)
-
+        screen.blit(self.surf, (self.x, self.y))
+        self.rect = self.surf.get_rect(center=(self.x, self.y))
 class Point:
     def __init__(self):
         self.x = random.randint(-screen_size, screen_size)
         self.y = screen_size#random.randint(-screen_size, screen_size)
         self.rect = pygame.Rect(self.x-50, self.y-50, 100, 100)
+        self.surf = pygame.image.load("point.png")
+        self.rect = self.surf.get_rect(center=(self.x, screen_size))
     def draw(self):
-        x,y = self.x, self.y
-    
-        RED = (255, 0, 0) # set up your own colours
-        BLUE = (0, 255, 0)
-        GOLD = (0, 0, 255)
-
-        pygame.draw.circle(screen, BLUE, [x,y], 30, 5) # draw a circle - centre x, centre y, radius, line width
-        self.rect = pygame.Rect(x-50, y-50, 100, 100)
+        screen.blit(self.surf, (self.x, self.y))
+        self.rect = self.surf.get_rect(center=(self.x, self.y))
     def move(self, value):
         self.y += value
         
 ########################################################
 # main code
-pygame.init()
+pygame.init()  
 
 clock = pygame.time.Clock()
 
 # set the screen dimensions
-screen_size = 750
+screen_size = int(input("Enter screen size: "))
 screen = pygame.display.set_mode([screen_size, screen_size])
 player = Player()
 enemies = []
 points = []
 count = 0
+bg = pygame.image.load("grass.png")
 # Run until the user asks to quit
 running = True
 while running:
@@ -122,9 +117,11 @@ while running:
         player.move(-screen_size/2)
         print(player.lives)
     # draw to the screen
-    safeColour = (47, 181, 65) # add the safe background colour 
-    screen.fill(safeColour)
+##    safeColour = (47, 181, 65) # add the safe background colour 
+##    screen.fill(safeColour)
+    screen.blit(bg, (0,0))
     player.draw()
+    hit = False
     for enemy in enemies:
         enemy.draw()
         enemy.move(5)
@@ -136,6 +133,7 @@ while running:
             enemies.remove(enemy)
             player.lives -= 1
             print(player.lives)
+            hit = True
     for point in points:
         point.draw()
         point.move(-5)
@@ -147,6 +145,9 @@ while running:
             points.remove(point)
             player.lives += 1
             print(player.lives)
+
+    if hit:
+        player.draw(1)
 
     # Flip the display
     pygame.display.flip()
