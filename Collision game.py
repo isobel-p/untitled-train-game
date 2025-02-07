@@ -114,7 +114,7 @@ while running:
     if player.x < 0:
         #print("Out of bounds")
         player.lives -= 1
-        player.move_(screen_size/2)
+        player.move(screen_size/2)
         print(player.lives)
     if player.x > screen_size:
         #print("Out of bounds")
