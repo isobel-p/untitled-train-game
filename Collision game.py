@@ -12,10 +12,10 @@ class Player:
         self.rect = pygame.Rect(self.x-50, self.y-50, 100, 100)
         self.speed = 4
         self.lives = 3
-    def move_x(self, value):
+    def move(self, value):
         self.x += value
-    def move_y(self, value):
-        self.y += value
+    #def move(self, value):
+    #    self.y += value
     def draw(self, skin = "safe"): # safe by default
         x,y = self.x, self.y
         rects = []
@@ -23,8 +23,12 @@ class Player:
         RED = (200, 72, 72)
         BLUE = (24, 72, 88)
         GOLD = (248, 200, 40)
+
+        # shows different skins depending on player position
         
         if skin == "safe" or skin == 0:
+            # pygame.draw function returns a Rect object -
+            # each Rect is added to the list of rectangles
             rects.append(pygame.draw.rect(screen, GOLD, pygame.Rect(x-20, y-15, 40, 20)))
             rects.append(pygame.draw.rect(screen, BLUE, pygame.Rect(x-30, y-30, 20, 35)))
             rects.append(pygame.draw.rect(screen, RED, pygame.Rect(x-35, y-35, 30, 5)))
@@ -32,21 +36,21 @@ class Player:
             rects.append(pygame.draw.circle(screen, RED, [x-25, y+10], 10))
             rects.append(pygame.draw.circle(screen, RED, [x+5, y+10], 5))
             rects.append(pygame.draw.circle(screen, RED, [x+20, y+10], 5))
-
-            self.rect = self.rect.unionall(rects)
         elif skin == "crashed" or skin == 1:
-            pygame.draw.circle(screen, (255, 0, 0), [x,y], 30, 5) # draw a circle - centre x, centre y, radius, line width
+            # todo: make crashed
+            pass
+
+        self.rect = self.rect.unionall(rects) # combines all the Rect objects into one hitbox rectangle
 
 class Enemy:
     def __init__(self):
-        self.x = random.randint(-screen_size, screen_size)
+        self.x = random.randint(-screen_size, screen_size) # Places the enemy randomly along the top of the screen
         self.y = 0#random.randint(-screen_size, screen_size)
         self.rect = self.rect = pygame.Rect(self.x-50, self.y-50, 100, 100)
         self.speed = 1
-    def move_x(self, value):
-        self.x += value
-    def move_y(self, value):
-        
+##    def move_x(self, value):
+##        self.x += value
+    def move(self, value):
         self.y += value
     def draw(self):
         x,y = self.x, self.y
@@ -72,8 +76,7 @@ class Point:
 
         pygame.draw.circle(screen, BLUE, [x,y], 30, 5) # draw a circle - centre x, centre y, radius, line width
         self.rect = pygame.Rect(x-50, y-50, 100, 100)
-    def move_y(self, value):
-        
+    def move(self, value):
         self.y += value
         
 ########################################################
@@ -100,9 +103,9 @@ while running:
     keys = pygame.key.get_pressed() # listen for keypress
 
     if keys[pygame.K_SPACE]:
-        player.move_x(player.speed)
+        player.move(player.speed)
     else:
-        player.move_x(-player.speed)
+        player.move(-player.speed)
     
     count += 1
     if count % 30 == 0:
@@ -111,12 +114,12 @@ while running:
     if player.x < 0:
         #print("Out of bounds")
         player.lives -= 1
-        player.move_x(screen_size/2)
+        player.move_(screen_size/2)
         print(player.lives)
     if player.x > screen_size:
         #print("Out of bounds")
         player.lives -= 1
-        player.move_x(-screen_size/2)
+        player.move(-screen_size/2)
         print(player.lives)
     # draw to the screen
     safeColour = (47, 181, 65) # add the safe background colour 
@@ -124,7 +127,10 @@ while running:
     player.draw()
     for enemy in enemies:
         enemy.draw()
-        enemy.move_y(5)
+        enemy.move(5)
+        # deletes the enemy/point once it goes out of bounds
+        if enemy.y > screen_size:
+            enemies.remove(enemy)
         if pygame.Rect.colliderect(player.rect, enemy.rect):
             #print("Hit!")
             enemies.remove(enemy)
@@ -132,17 +138,16 @@ while running:
             print(player.lives)
     for point in points:
         point.draw()
-        point.move_y(-5)
+        point.move(-5)
+        # deletes the enemy/point once it goes out of bounds
+        if point.y < 0:
+            points.remove(point)
         if pygame.Rect.colliderect(player.rect, point.rect):
             #print("Point!")
             points.remove(point)
             player.lives += 1
             print(player.lives)
-    
-    
 
-    
-    
     # Flip the display
     pygame.display.flip()
     clock.tick(60)
