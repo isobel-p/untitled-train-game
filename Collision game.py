@@ -10,12 +10,10 @@ class Player:
         self.y = screen_size/2
         # center the player in the middle of the screen
         self.rect = pygame.Rect(self.x-50, self.y-50, 100, 100)
-        self.speed = 4
+        self.speed = 4 # how many pixels it moves every second - debugging
         self.lives = 3
     def move(self, value):
         self.x += value
-    #def move(self, value):
-    #    self.y += value
     def draw(self, skin = "safe"): # safe by default
         x,y = self.x, self.y
         rects = []
@@ -23,10 +21,12 @@ class Player:
         RED = (200, 72, 72)
         BLUE = (24, 72, 88)
         GOLD = (248, 200, 40)
-        # shows different skins depending on player position      
+        WHITE = (255, 255, 255)
+        # shows different skins depending on player position
+        #
+        # pygame.draw function returns a Rect object -
+        # each Rect is added to the list of rectangles
         if skin == "safe" or skin == 0:
-            # pygame.draw function returns a Rect object -
-            # each Rect is added to the list of rectangles
             rects.append(pygame.draw.rect(screen, GOLD, pygame.Rect(x-20, y-15, 40, 20)))
             rects.append(pygame.draw.rect(screen, BLUE, pygame.Rect(x-30, y-30, 20, 35)))
             rects.append(pygame.draw.rect(screen, RED, pygame.Rect(x-35, y-35, 30, 5)))
@@ -35,6 +35,7 @@ class Player:
             rects.append(pygame.draw.circle(screen, RED, [x+5, y+10], 5)) 
             rects.append(pygame.draw.circle(screen, RED, [x+20, y+10], 5))
         elif skin == "crashed" or skin == 1:
+            # flash red
             rects.append(pygame.draw.rect(screen, RED, pygame.Rect(x-20, y-15, 40, 20)))
             rects.append(pygame.draw.rect(screen, RED, pygame.Rect(x-30, y-30, 20, 35)))
             rects.append(pygame.draw.rect(screen, RED, pygame.Rect(x-35, y-35, 30, 5)))
@@ -43,13 +44,14 @@ class Player:
             rects.append(pygame.draw.circle(screen, RED, [x+5, y+10], 5)) 
             rects.append(pygame.draw.circle(screen, RED, [x+20, y+10], 5))
         elif skin == "point" or skin == 2:
-            rects.append(pygame.draw.rect(screen, GOLD, pygame.Rect(x-20, y-15, 40, 20)))
-            rects.append(pygame.draw.rect(screen, GOLD, pygame.Rect(x-30, y-30, 20, 35)))
-            rects.append(pygame.draw.rect(screen, GOLD, pygame.Rect(x-35, y-35, 30, 5)))
-            rects.append(pygame.draw.polygon(screen, GOLD, [(x+20, y-15), (x+20, y+5), (x+40, y+5)]))
-            rects.append(pygame.draw.circle(screen, GOLD, [x-25, y+10], 10))
-            rects.append(pygame.draw.circle(screen, GOLD, [x+5, y+10], 5)) 
-            rects.append(pygame.draw.circle(screen, GOLD, [x+20, y+10], 5))
+            # flash white
+            rects.append(pygame.draw.rect(screen, WHITE, pygame.Rect(x-20, y-15, 40, 20)))
+            rects.append(pygame.draw.rect(screen, WHITE, pygame.Rect(x-30, y-30, 20, 35)))
+            rects.append(pygame.draw.rect(screen, WHITE, pygame.Rect(x-35, y-35, 30, 5)))
+            rects.append(pygame.draw.polygon(screen, WHITE, [(x+20, y-15), (x+20, y+5), (x+40, y+5)]))
+            rects.append(pygame.draw.circle(screen, WHITE, [x-25, y+10], 10))
+            rects.append(pygame.draw.circle(screen, WHITE, [x+5, y+10], 5)) 
+            rects.append(pygame.draw.circle(screen, WHITE, [x+20, y+10], 5))
         self.rect = self.rect.unionall(rects) # combines all the Rect objects into one hitbox rectangle
         # pygame.draw.rect(screen, (random.randint(0,255),random.randint(0,255),random.randint(0,255)), self.rect) # rainbow hitbox!
 
@@ -58,39 +60,37 @@ class Enemy:
     def __init__(self):
         self.x = random.randint(-screen_size, screen_size) # Places the enemy randomly along the top of the screen
         self.y = 0#random.randint(-screen_size, screen_size)
-        self.rect = self.rect = pygame.Rect(self.x-50, self.y-50, 100, 100)
-        self.speed = 1
-        self.surf = pygame.image.load("enemy.png").convert_alpha()
-        self.rect = self.surf.get_rect(center=(self.x, 0))
+        self.surf = pygame.image.load("enemy.png").convert_alpha() # produces a Surface object from an image
+        self.rect = self.surf.get_rect(center=(self.x, 0)) # produces a Rect object from the Surface
     def move(self, value):
         self.y += value
     def draw(self):
-        screen.blit(self.surf, (self.x, self.y))
-        self.rect = self.surf.get_rect(center=(self.x, self.y))
+        screen.blit(self.surf, (self.x, self.y)) # blits to screen
+        self.rect = self.surf.get_rect(center=(self.x, self.y)) # produces a Rect object from the Surface at new position
 
         
 class Point:
     def __init__(self):
         self.x = random.randint(-screen_size, screen_size)
         self.y = screen_size#random.randint(-screen_size, screen_size)
-        self.rect = pygame.Rect(self.x-50, self.y-50, 100, 100)
-        self.surf = pygame.image.load("point.png")
-        self.rect = self.surf.get_rect(center=(self.x, screen_size))
+        self.surf = pygame.image.load("point.png") # produces a Surface object from an image
+        self.rect = self.surf.get_rect(center=(self.x, screen_size)) # produces a Rect object from the Surface
     def draw(self):
-        screen.blit(self.surf, (self.x, self.y))
-        self.rect = self.surf.get_rect(center=(self.x, self.y))
+        screen.blit(self.surf, (self.x, self.y)) # blits to screen
+        self.rect = self.surf.get_rect(center=(self.x, self.y))# produces a Rect object from the Surface at new position
     def move(self, value):
         self.y += value
 
 
 class BgObject:
     def __init__(self):
-        self.x = 0
+        self.x = screen_size
         self.y = random.randint(0, screen_size)
         self.speed = abs(screen_size/2-self.y)/10
-    def draw(self):
+        # ^ the further from the train, the faster it moves.
+    def draw(self): # NB: draws and moves in the same function
         pygame.draw.rect(screen, (0,0,0), pygame.Rect(self.x-10, self.y-10, 20, 20))
-        self.x += self.speed
+        self.x -= self.speed
         
 ########################################################
 # main code
@@ -101,13 +101,15 @@ clock = pygame.time.Clock()
 # set the screen dimensions
 screen_size = 800#int(input("Enter screen size: "))
 screen = pygame.display.set_mode([screen_size, screen_size])
+# ^ allows for the screen to be resized while keeping aspect ratio
 player = Player()
-enemies = []
-points = []
-count = 0
-bg = pygame.image.load("grass.png")
-bg_objects = []
-hit = 0
+enemies = []    # lists for storing
+points = []     # instances of points,
+bg_objects = [] # enemies, bg objects
+count = 0 # counts how many ticks since the start of game
+bg = pygame.image.load("grass.png") # todo: change
+hit = 0 # for flashing on collision
+
 # Run until the user asks to quit
 running = True
 while running:
@@ -120,55 +122,52 @@ while running:
 
     if keys[pygame.K_SPACE]:
         player.move(player.speed)
+        # if space pressed move forwards...
     else:
         player.move(-player.speed)
+        # ...else move backwards
     
     count += 1
-    if count % 30 == 0:
+    if count % 30 == 0: # called every half a second or 30 ticks
         points.append(Point())
-        
         bg_objects.append(BgObject())
-    if count % 10 == 0:
+    if count % 10 == 0: # called every sixth of a second or 10 ticks
         enemies.append(Enemy())
+
+    # detects out of bounds collision
     if player.x < 0:
-        #print("Out of bounds")
         player.lives -= 1
-        player.move(screen_size/2)
-        print(player.lives)
+        player.move(screen_size/2) # moves back to middle of screen
     if player.x > screen_size:
-        #print("Out of bounds")
         player.lives -= 1
-        player.move(-screen_size/2)
-    # draw to the screen
-##    safeColour = (47, 181, 65) # add the safe background colour 
-##    screen.fill(safeColour)
+        player.move(-screen_size/2) # moves back to middle of screen
+        
     screen.blit(bg, (0,0))
+    
     for enemy in enemies:
         enemy.draw()
         enemy.move(5)
-        # deletes the enemy/point once it goes out of bounds
+        # delete the enemy/point once it goes out of bounds
         if enemy.y > screen_size:
-            enemies.remove(enemy)
-        if pygame.Rect.colliderect(player.rect, enemy.rect):
-            #print("Hit!")
+            enemies.remove(enemy) 
+        if pygame.Rect.colliderect(player.rect, enemy.rect): # detect collision between player and enemies
             enemies.remove(enemy)
             player.lives -= 1
-            hit = 15
+            hit = 15 # flashes red for 1/4 of a second or 15 ticks
     for point in points:
         point.draw()
         point.move(-5)
-        # deletes the enemy/point once it goes out of bounds
+        # delete the enemy/point once it goes out of bounds
         if point.y < 0:
             points.remove(point)
-        if pygame.Rect.colliderect(player.rect, point.rect):
-            #print("Point!")
+        if pygame.Rect.colliderect(player.rect, point.rect): # detect collision between player and points
             points.remove(point)
             player.lives += 1
-            hit = -15
+            hit = -15 # flashes white for 1/4 of a second or 15 ticks
     for bg_object in bg_objects:
         bg_object.draw()
         # deletes the enemy/point once it goes out of bounds
-        if bg_object.x > screen_size:
+        if bg_object.x < 0:
             bg_objects.remove(bg_object)
         
     if hit > 0:
