@@ -91,6 +91,7 @@ class BgObject:
     def draw(self): # NB: draws and moves in the same function
         pygame.draw.rect(screen, (0,0,0), pygame.Rect(self.x-10, self.y-10, 20, 20))
         self.x -= self.speed
+        self.x -= count//60
         
 ########################################################
 # main code
@@ -146,7 +147,7 @@ while running:
     
     for enemy in enemies:
         enemy.draw()
-        enemy.move(5)
+        enemy.move(5+count//1200)
         # delete the enemy/point once it goes out of bounds
         if enemy.y > screen_size:
             enemies.remove(enemy) 
@@ -156,7 +157,7 @@ while running:
             hit = 15 # flashes red for 1/4 of a second or 15 ticks
     for point in points:
         point.draw()
-        point.move(-5)
+        point.move(-5-count//1200)
         # delete the enemy/point once it goes out of bounds
         if point.y < 0:
             points.remove(point)
@@ -170,20 +171,25 @@ while running:
         if bg_object.x < 0:
             bg_objects.remove(bg_object)
         
-    if hit > 0:
-        player.draw(1)
+    if hit > 0: 
+        player.draw(1) # flash red
         hit -= 1
-    elif hit < 0:
-        player.draw(2)
+    elif hit < 0: 
+        player.draw(2) # flash white
         hit += 1
     else:
-        player.draw()
-    a=20
+        player.draw() # normal colours
+
+    # blitting life bar
+    # creates default 50x50 boxes with 20px margin
+    x=20
     for i in range(player.lives):
-        pygame.draw.rect(screen, (0,0,0), pygame.Rect(a, screen_size-70, 50, 50))
-        a+=70
+        pygame.draw.rect(screen, (0,0,0), pygame.Rect(x, screen_size-70, 50, 50))
+        x+=70
+        
     if player.lives <= 0:
-        running = False
+        running = False # uh oh, player died
+        
     # Flip the display
     pygame.display.flip()
     clock.tick(60)
