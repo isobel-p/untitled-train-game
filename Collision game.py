@@ -113,83 +113,86 @@ hit = 0 # for flashing on collision
 
 # Run until the user asks to quit
 running = True
+game = True
 while running:
     # Did the user click the window close button?
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+    if game == True:
+        keys = pygame.key.get_pressed() # listen for keypress
 
-    keys = pygame.key.get_pressed() # listen for keypress
-
-    if keys[pygame.K_SPACE]:
-        player.move(player.speed)
-        # if space pressed move forwards...
-    else:
-        player.move(-player.speed)
-        # ...else move backwards
-    
-    count += 1
-    if count % 30 == 0: # called every half a second or 30 ticks
-        points.append(Point())
-        bg_objects.append(BgObject())
-    if count % 10 == 0: # called every sixth of a second or 10 ticks
-        enemies.append(Enemy())
-
-    # detects out of bounds collision
-    if player.x < 0:
-        player.lives -= 1
-        player.move(screen_size/2) # moves back to middle of screen
-    if player.x > screen_size:
-        player.lives -= 1
-        player.move(-screen_size/2) # moves back to middle of screen
+        if keys[pygame.K_SPACE]:
+            player.move(player.speed)
+            # if space pressed move forwards...
+        else:
+            player.move(-player.speed)
+            # ...else move backwards
         
-    screen.blit(bg, (0,0))
-    
-    for enemy in enemies:
-        enemy.draw()
-        enemy.move(5+count//1200)
-        # delete the enemy/point once it goes out of bounds
-        if enemy.y > screen_size:
-            enemies.remove(enemy) 
-        if pygame.Rect.colliderect(player.rect, enemy.rect): # detect collision between player and enemies
-            enemies.remove(enemy)
+        count += 1
+        if count % 30 == 0: # called every half a second or 30 ticks
+            points.append(Point())
+            bg_objects.append(BgObject())
+        if count % 10 == 0: # called every sixth of a second or 10 ticks
+            enemies.append(Enemy())
+
+        # detects out of bounds collision
+        if player.x < 0:
             player.lives -= 1
-            hit = 15 # flashes red for 1/4 of a second or 15 ticks
-    for point in points:
-        point.draw()
-        point.move(-5-count//1200)
-        # delete the enemy/point once it goes out of bounds
-        if point.y < 0:
-            points.remove(point)
-        if pygame.Rect.colliderect(player.rect, point.rect): # detect collision between player and points
-            points.remove(point)
-            player.lives += 1
-            hit = -15 # flashes white for 1/4 of a second or 15 ticks
-    for bg_object in bg_objects:
-        bg_object.draw()
-        # deletes the enemy/point once it goes out of bounds
-        if bg_object.x < 0:
-            bg_objects.remove(bg_object)
+            player.move(screen_size/2) # moves back to middle of screen
+        if player.x > screen_size:
+            player.lives -= 1
+            player.move(-screen_size/2) # moves back to middle of screen
+            
+        screen.blit(bg, (0,0))
         
-    if hit > 0: 
-        player.draw(1) # flash red
-        hit -= 1
-    elif hit < 0: 
-        player.draw(2) # flash white
-        hit += 1
-    else:
-        player.draw() # normal colours
+        for enemy in enemies:
+            enemy.draw()
+            enemy.move(5+count//1200)
+            # delete the enemy/point once it goes out of bounds
+            if enemy.y > screen_size:
+                enemies.remove(enemy) 
+            if pygame.Rect.colliderect(player.rect, enemy.rect): # detect collision between player and enemies
+                enemies.remove(enemy)
+                player.lives -= 1
+                hit = 15 # flashes red for 1/4 of a second or 15 ticks
+        for point in points:
+            point.draw()
+            point.move(-5-count//1200)
+            # delete the enemy/point once it goes out of bounds
+            if point.y < 0:
+                points.remove(point)
+            if pygame.Rect.colliderect(player.rect, point.rect): # detect collision between player and points
+                points.remove(point)
+                player.lives += 1
+                hit = -15 # flashes white for 1/4 of a second or 15 ticks
+        for bg_object in bg_objects:
+            bg_object.draw()
+            # deletes the enemy/point once it goes out of bounds
+            if bg_object.x < 0:
+                bg_objects.remove(bg_object)
+            
+        if hit > 0: 
+            player.draw(1) # flash red
+            hit -= 1
+        elif hit < 0: 
+            player.draw(2) # flash white
+            hit += 1
+        else:
+            player.draw() # normal colours
 
-    # blitting life bar
-    # creates default 50x50 boxes with 20px margin
-    x=20
-    for i in range(player.lives):
-        pygame.draw.rect(screen, (0,0,0), pygame.Rect(x, screen_size-70, 50, 50))
-        x+=70
-        
-    if player.lives <= 0:
-        running = False # uh oh, player died
-        
+        # blitting life bar
+        # creates default 50x50 boxes with 20px margin
+        x=20
+        for i in range(player.lives):
+            pygame.draw.rect(screen, (0,0,0), pygame.Rect(x, screen_size-70, 50, 50))
+            x+=70
+            
+        if player.lives <= 0:
+            game= False # uh oh, player died
+            
+    else: # game = False
+        running = False # will be menu screen
     # Flip the display
     pygame.display.flip()
     clock.tick(60)
