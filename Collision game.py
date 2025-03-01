@@ -82,14 +82,25 @@ class Point:
         self.y += value
 
 
-class BgObject:
+class Bg:
+    def __init__(self):
+        self.surf = pygame.image.load("grass.png")
+        self.offset = 0
+    def draw(self):
+        self.offset = (self.offset+1)%1200
+        screen.blit(self.surf, (-self.offset, 0))
+
+
+class Tree:
     def __init__(self):
         self.x = screen_size
         self.y = random.randint(0, screen_size)
+        self.surf = pygame.image.load("tree.png")
         self.speed = abs(screen_size/2-self.y)/10
         # ^ the further from the train, the faster it moves.
     def draw(self): # NB: draws and moves in the same function
-        pygame.draw.rect(screen, (0,0,0), pygame.Rect(self.x-10, self.y-10, 20, 20))
+        # pygame.draw.rect(screen, (0,0,0), pygame.Rect(self.x-10, self.y-10, 20, 20))
+        screen.blit(self.surf, (self.x, self.y))
         self.x -= self.speed
         self.x -= count//60
         
@@ -103,17 +114,21 @@ clock = pygame.time.Clock()
 screen_size = 800#int(input("Enter screen size: "))
 screen = pygame.display.set_mode([screen_size, screen_size])
 # ^ allows for the screen to be resized while keeping aspect ratio
-player = Player()
-enemies = []    # lists for storing
-points = []     # instances of points,
-bg_objects = [] # enemies, bg objects
-count = 0 # counts how many ticks since the start of game
-bg = pygame.image.load("grass.png") # todo: change
-hit = 0 # for flashing on collision
 
 # Run until the user asks to quit
 running = True
 game = True
+
+# Setup variables
+player = Player()
+bg = Bg()
+enemies = []    # lists for storing
+points = []     # instances of points,
+trees = []      # enemies, trees
+count = 0 # counts how many ticks since the start of game
+heart = pygame.image.load("heart.png")
+hit = 0 # for flashing on collision
+
 while running:
     # Did the user click the window close button?
     for event in pygame.event.get():
@@ -128,13 +143,18 @@ while running:
         else:
             player.move(-player.speed)
             # ...else move backwards
+
+        bg.draw()
         
         count += 1
-        if count % 30 == 0: # called every half a second or 30 ticks
+        if count % 60 == 0: # called every second or 60 ticks
             points.append(Point())
-            bg_objects.append(BgObject())
+            trees.append(Tree())
         if count % 10 == 0: # called every sixth of a second or 10 ticks
             enemies.append(Enemy())
+        #debugging
+        if count % 1200 <= 10:
+            screen.fill((0,255,255))
 
         # detects out of bounds collision
         if player.x < 0:
@@ -144,7 +164,9 @@ while running:
             player.lives -= 1
             player.move(-screen_size/2) # moves back to middle of screen
             
-        screen.blit(bg, (0,0))
+        # screen.blit(bg, (0,0))
+        
+        
         
         for enemy in enemies:
             enemy.draw()
@@ -166,11 +188,11 @@ while running:
                 points.remove(point)
                 player.lives += 1
                 hit = -15 # flashes white for 1/4 of a second or 15 ticks
-        for bg_object in bg_objects:
-            bg_object.draw()
+        for tree in trees:
+            tree.draw()
             # deletes the enemy/point once it goes out of bounds
-            if bg_object.x < 0:
-                bg_objects.remove(bg_object)
+            if tree.x < 0:
+                trees.remove(tree)
             
         if hit > 0: 
             player.draw(1) # flash red
@@ -185,12 +207,12 @@ while running:
         # creates default 50x50 boxes with 20px margin
         x=20
         for i in range(player.lives):
-            pygame.draw.rect(screen, (0,0,0), pygame.Rect(x, screen_size-70, 50, 50))
+            screen.blit(heart, (x, screen_size-70 ))
             x+=70
             
         if player.lives <= 0:
             game= False # uh oh, player died
-            
+             
     else: # game = False
         running = False # will be menu screen
     # Flip the display
