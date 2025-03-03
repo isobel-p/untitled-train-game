@@ -118,6 +118,7 @@ screen = pygame.display.set_mode([screen_size, screen_size])
 # Run until the user asks to quit
 running = True
 game = True
+cooldown = 0
 
 # Setup variables
 player = Player()
@@ -166,8 +167,6 @@ while running:
             
         # screen.blit(bg, (0,0))
         
-        
-        
         for enemy in enemies:
             enemy.draw()
             enemy.move(5+count//1200)
@@ -207,14 +206,33 @@ while running:
         # creates default 50x50 boxes with 20px margin
         x=20
         for i in range(player.lives):
-            screen.blit(heart, (x, screen_size-70 ))
+            screen.blit(heart, (x, screen_size-70))
             x+=70
             
         if player.lives <= 0:
+            cooldown = 180
             game= False # uh oh, player died
              
     else: # game = False
-        running = False # will be menu screen
+        screen.fill((0,0,0))
+        keys = pygame.key.get_pressed() # listen for keypress
+
+        if keys[pygame.K_SPACE]:
+            if cooldown <= 0:
+                player = Player()
+                bg = Bg()
+                enemies = []    # lists for storing
+                points = []     # instances of points,
+                trees = []      # enemies, trees
+                count = 0 # counts how many ticks since the start of game
+                heart = pygame.image.load("heart.png")
+                hit = 0 # for flashing on collision
+                cooldown = 0
+                game = True # will be menu screen
+        elif keys[pygame.K_ESCAPE]:
+            running = False
+        cooldown -= 1
+        print(cooldown) # debugging
     # Flip the display
     pygame.display.flip()
     clock.tick(60)
