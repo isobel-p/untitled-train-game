@@ -214,7 +214,7 @@ while running:
             game= False # uh oh, player died
              
     else: # game = False
-        screen.fill((0,0,0))
+        screen.fill((255, 255, 255))
         keys = pygame.key.get_pressed() # listen for keypress
 
         if keys[pygame.K_SPACE]:
@@ -232,7 +232,6 @@ while running:
         elif keys[pygame.K_ESCAPE]:
             running = False
         cooldown -= 1
-        print(cooldown) # debugging
     # Flip the display
     pygame.display.flip()
     clock.tick(60)
