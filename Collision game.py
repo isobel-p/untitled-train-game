@@ -65,8 +65,9 @@ class Enemy:
     def move(self, value):
         self.y += value
     def draw(self):
-        screen.blit(self.surf, (self.x, self.y)) # blits to screen
         self.rect = self.surf.get_rect(center=(self.x, self.y)) # produces a Rect object from the Surface at new position
+        screen.blit(self.surf, self.rect) # blits to screen
+        
 
         
 class Point:
@@ -76,8 +77,9 @@ class Point:
         self.surf = pygame.image.load("point.png") # produces a Surface object from an image
         self.rect = self.surf.get_rect(center=(self.x, screen_size)) # produces a Rect object from the Surface
     def draw(self):
-        screen.blit(self.surf, (self.x, self.y)) # blits to screen
         self.rect = self.surf.get_rect(center=(self.x, self.y))# produces a Rect object from the Surface at new position
+        screen.blit(self.surf, self.rect) # blits to screen
+        
     def move(self, value):
         self.y += value
 
@@ -114,10 +116,13 @@ clock = pygame.time.Clock()
 screen_size = 800#int(input("Enter screen size: "))
 screen = pygame.display.set_mode([screen_size, screen_size])
 # ^ allows for the screen to be resized while keeping aspect ratio
+font_big = pygame.font.Font(None, 96)
+font = pygame.font.Font(None, 32)
+
 
 # Run until the user asks to quit
 running = True
-game = True
+game = False
 cooldown = 0
 
 # Setup variables
@@ -169,7 +174,7 @@ while running:
         
         for enemy in enemies:
             enemy.draw()
-            enemy.move(5+count//1200)
+            enemy.move(5+count//400)
             # delete the enemy/point once it goes out of bounds
             if enemy.y > screen_size:
                 enemies.remove(enemy) 
@@ -179,7 +184,7 @@ while running:
                 hit = 15 # flashes red for 1/4 of a second or 15 ticks
         for point in points:
             point.draw()
-            point.move(-5-count//1200)
+            point.move(-5-count//400)
             # delete the enemy/point once it goes out of bounds
             if point.y < 0:
                 points.remove(point)
@@ -216,6 +221,25 @@ while running:
     else: # game = False
         screen.fill((255, 255, 255))
         keys = pygame.key.get_pressed() # listen for keypress
+        title = font_big.render("Untitled Train Game", True, (0,0,0)) # render font
+        title_pos = title.get_rect(centerx=screen_size/2, y=50) # set position
+        screen.blit(title, title_pos) # blit to screen
+##        instructions = font.render("", True, (0,0,0))
+##        instructions_pos = instructions.get_rect(centerx=screen_size/2, y=200)
+##        screen.blit(instructions, instructions_pos)
+        guide = """[description here]
+
+SPACE to accelerate.
+Let go to decelerate.
+
+Collect passengers (from bottom).
+Avoid spiders (from top).""".split("\n") # splits the guide by newline into the guide list
+        guide_fonts = [] # For storing rendered fonts and
+        guide_rects = [] # their Rect objects
+        for i in range(len(guide)):
+            guide_fonts.append(font.render(guide[i], True, (0,0,0))) # render font
+            guide_rects.append(guide_fonts[i].get_rect(centerx=screen_size/2, y=(50*i)+200)) # set position
+            screen.blit(guide_fonts[i], guide_rects[i]) # blit to screen
 
         if keys[pygame.K_SPACE]:
             if cooldown <= 0:
@@ -231,7 +255,20 @@ while running:
                 game = True # will be menu screen
         elif keys[pygame.K_ESCAPE]:
             running = False
-        cooldown -= 1
+        characters = [Player(), Point(), Enemy()]
+        for character in characters:
+            character.x = screen_size/2
+            character.y = 275+(characters.index(character)*140)
+            character.draw()
+        if cooldown > 0:
+            cooltext = font_big.render(f'{cooldown//60}', True, (0,0,0)) # render font
+            cooltext_pos = cooltext.get_rect(centerx=screen_size/2, y=screen_size-100) # set position
+            screen.blit(cooltext, cooltext_pos) # blit to screen
+            cooldown -= 1
+        else:
+            starttext = font_big.render(f'SPACE to start', True, (0,0,0)) # render font
+            starttext_pos = starttext.get_rect(centerx=screen_size/2, y=screen_size-100) # set position
+            screen.blit(starttext, starttext_pos) # blit to screen
     # Flip the display
     pygame.display.flip()
     clock.tick(60)
