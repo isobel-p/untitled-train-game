@@ -23,7 +23,7 @@ class Player:
         GOLD = (248, 200, 40)
         WHITE = (255, 255, 255)
         # shows different skins depending on player position
-        #
+        
         # pygame.draw function returns a Rect object -
         # each Rect is added to the list of rectangles
         if skin == "safe" or skin == 0:
@@ -118,6 +118,8 @@ screen = pygame.display.set_mode([screen_size, screen_size])
 # ^ allows for the screen to be resized while keeping aspect ratio
 font_big = pygame.font.Font(None, 96)
 font = pygame.font.Font(None, 32)
+pygame.mixer.init()
+
 
 
 # Run until the user asks to quit
@@ -227,7 +229,7 @@ while running:
 ##        instructions = font.render("", True, (0,0,0))
 ##        instructions_pos = instructions.get_rect(centerx=screen_size/2, y=200)
 ##        screen.blit(instructions, instructions_pos)
-        guide = """[description here]
+        guide = """All in the name.
 
 SPACE to accelerate.
 Let go to decelerate.
@@ -260,6 +262,10 @@ Avoid spiders (from top).""".split("\n") # splits the guide by newline into the 
             character.x = screen_size/2
             character.y = 275+(characters.index(character)*140)
             character.draw()
+        if count > 0:
+            score = font.render(f'{count}', True, (0,0,0))
+            score_pos = score.get_rect(centerx=screen_size/2, y=screen_size-150)
+            screen.blit(score, score_pos)
         if cooldown > 0:
             cooltext = font_big.render(f'{cooldown//60}', True, (0,0,0)) # render font
             cooltext_pos = cooltext.get_rect(centerx=screen_size/2, y=screen_size-100) # set position
