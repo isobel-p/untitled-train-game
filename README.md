@@ -7,17 +7,15 @@ _(might be implemented in the future)_
 - Some form of GUI for control (tkinter, PyQT5, etc)
 - Randomise direction of enemies/points
 - Custom screen aspect ratio
-- Clearer level transition
 - Cleaner screen resizing
+- Overhauled graphics - colour scheme
 
 ## Planned
 _(will be implemented in the future)_
-- Day-night cycle
-- Overhauled graphics - colour scheme
 
 # In Progress
-- Music
-- Cleaner menu
+- Day-night cycle
+- Clearer level transition
 
 # Done
 ~~Rect.unionall() collision~~
@@ -37,6 +35,10 @@ _(will be implemented in the future)_
 ~~Menu~~
 
 ~~A name...~~
+
+~~Music~~
+
+~~Cleaner menu~~
 
 ~~Better enemy : point spawn ratio~~
 
