@@ -131,6 +131,10 @@ screen = pygame.display.set_mode([screen_size, screen_size])
 # ^ allows for the screen to be resized while keeping aspect ratio
 font_big = pygame.font.Font("Bullpen3D.ttf", 64)
 font = pygame.font.Font("PlayfairDisplay-Regular.ttf", 28)
+
+heart = pygame.image.load("heart.png")
+arrow = pygame.image.load("arrow.png")
+
 pygame.mixer.init()
 menu_music = pygame.mixer.Sound("menu.mp3")
 menu_music.play(loops=-1, fade_ms=100)
@@ -150,7 +154,7 @@ enemies = []  # lists for storing
 points = []  # instances of points,
 trees = []  # enemies, trees
 count = 0  # counts how many ticks since the start of game
-heart = pygame.image.load("heart.png")
+
 hit = 0  # for flashing on collision
 
 while running:
@@ -176,9 +180,8 @@ while running:
             trees.append(Tree())
         if count % 10 == 0:  # called every sixth of a second or 10 ticks
             enemies.append(Enemy())
-        # debugging
-        if count % 1200 <= 10:
-            screen.fill((0, 255, 255))
+        if count % 400 <= 20:
+            screen.blit(arrow, (screen_size-60, screen_size-90))
 
         # detects out of bounds collision
         if player.x < 0:
@@ -272,7 +275,6 @@ Avoid spiders (from top).""".split("\n")  # splits the guide by newline into the
                 points = []  # instances of points,
                 trees = []  # enemies, trees
                 count = 0  # counts how many ticks since the start of game
-                heart = pygame.image.load("heart.png")
                 hit = 0  # for flashing on collision
                 cooldown = 0
                 menu_music.stop()
