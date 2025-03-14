@@ -8,14 +8,12 @@ _(might be implemented in the future)_
 - Randomise direction of enemies/points
 - Custom screen aspect ratio
 - Cleaner screen resizing
-- Overhauled graphics - colour scheme
 
 ## Planned
 _(will be implemented in the future)_
 
 # In Progress
-- Day-night cycle
-- Clearer level transition
+- Overhauled graphics - colour scheme
 
 # Done
 ~~Rect.unionall() collision~~
@@ -42,4 +40,8 @@ _(will be implemented in the future)_
 
 ~~Better enemy : point spawn ratio~~
 
+~~Day-night cycle~~
+
+~~Clearer level transition~~
+  
 :octocat:
