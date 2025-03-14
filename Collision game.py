@@ -96,12 +96,21 @@ class Point:
 
 class Bg:
     def __init__(self):
-        self.surf = pygame.image.load("grass.png")
+        self.time = 600 # length of day/night in ticks
+        self.day = pygame.image.load("day.png")
+        self.night = pygame.image.load("night.png")
+        self.surf = self.day
         self.offset = 0
+        self.rect = self.surf.get_rect(x=-self.offset, centery = screen_size/2)
 
     def draw(self):
         self.offset = (self.offset + 1) % 1200
-        screen.blit(self.surf, (-self.offset, 0))
+        if (count//self.time)%2 == 0:
+            self.surf = self.day
+        else:
+            self.surf = self.night
+        self.rect = self.surf.get_rect(x=-self.offset, centery = screen_size/2)
+        screen.blit(self.surf, self.rect)
 
 
 class Tree:
@@ -187,6 +196,8 @@ while running:
         if player.x < 0:
             player.lives -= 1
             player.move(screen_size / 2)  # moves back to middle of screen
+            enemies[0].sound.play() # plays the hit sound from the first enemy
+            hit = 20
         if player.x > screen_size:
             player.lives -= 1
             player.move(-screen_size / 2)  # moves back to middle of screen
