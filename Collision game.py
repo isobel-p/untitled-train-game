@@ -115,14 +115,20 @@ class Bg:
 
 class Tree:
     def __init__(self):
+        self.time = 600 # length of day/night in ticks
         self.x = screen_size
         self.y = random.randint(0, screen_size)
-        self.surf = pygame.image.load("graphics/tree.png")
+        self.day = pygame.image.load("graphics/tree_day.png")
+        self.night = pygame.image.load("graphics/tree_night.png")
+        self.surf = self.day
         self.speed = abs(screen_size / 2 - self.y) / 10
         # ^ the further from the train, the faster it moves.
 
     def draw(self):  # NB: draws and moves in the same function
-        # pygame.draw.rect(screen, (0,0,0), pygame.Rect(self.x-10, self.y-10, 20, 20))
+        if (count//self.time)%2 == 0:
+            self.surf = self.day
+        else:
+            self.surf = self.night
         screen.blit(self.surf, (self.x, self.y))
         self.x -= self.speed
         self.x -= count // 60
@@ -146,9 +152,8 @@ arrow = pygame.image.load("graphics/arrow.png")
 
 pygame.mixer.init()
 menu_music = pygame.mixer.Sound("audio/menu.mp3")
-menu_music.play(loops=-1, fade_ms=100)
 game_music = pygame.mixer.Sound("audio/main.mp3")
-game_music.play(loops=-1, fade_ms=100)
+menu_music.play(loops=-1, fade_ms=100)
 
 
 # Run until the user asks to quit
@@ -250,7 +255,7 @@ while running:
 
         if player.lives <= 0:
             cooldown = 180
-            menu_music.play()
+            menu_music.play(loops=-1, fade_ms=100)
             game_music.stop()
             game = False  # uh oh, player died
 
@@ -270,7 +275,9 @@ Press to accelerate.
 Let go to decelerate.
 
 Collect passengers (from bottom).
-Avoid spiders (from top).""".split("\n")  # splits the guide by newline into the guide list
+Avoid spiders (from top).
+
+For best experience turn volume up.""".split("\n")  # splits the guide by newline into the guide list
         guide_fonts = []  # For storing rendered fonts and
         guide_rects = []  # their Rect objects
         for i in range(len(guide)):
@@ -289,7 +296,7 @@ Avoid spiders (from top).""".split("\n")  # splits the guide by newline into the
                 hit = 0  # for flashing on collision
                 cooldown = 0
                 menu_music.stop()
-                game_music.play()
+                game_music.play(loops=-1, fade_ms=100)
                 game = True  # will be menu screen
 
         characters = [Player(), Point(), Enemy()]
