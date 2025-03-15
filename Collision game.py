@@ -64,9 +64,9 @@ class Enemy:
     def __init__(self):
         self.x = random.randint(-screen_size, screen_size)  # Places the enemy randomly along the top of the screen
         self.y = 0  # random.randint(-screen_size, screen_size)
-        self.surf = pygame.image.load("enemy.png").convert_alpha()  # produces a Surface object from an image
+        self.surf = pygame.image.load("graphics/enemy.png").convert_alpha()  # produces a Surface object from an image
         self.rect = self.surf.get_rect(center=(self.x, 0))  # produces a Rect object from the Surface
-        self.sound = pygame.mixer.Sound("enemy.mp3")
+        self.sound = pygame.mixer.Sound("audio/enemy.mp3")
 
     def move(self, value):
         self.y += value
@@ -81,9 +81,9 @@ class Point:
     def __init__(self):
         self.x = random.randint(-screen_size, screen_size)
         self.y = screen_size  # random.randint(-screen_size, screen_size)
-        self.surf = pygame.image.load("point.png")  # produces a Surface object from an image
+        self.surf = pygame.image.load("graphics/point.png")  # produces a Surface object from an image
         self.rect = self.surf.get_rect(center=(self.x, screen_size))  # produces a Rect object from the Surface
-        self.sound = pygame.mixer.Sound("point.mp3")
+        self.sound = pygame.mixer.Sound("audio/point.mp3")
 
     def draw(self):
         self.rect = self.surf.get_rect(
@@ -97,8 +97,8 @@ class Point:
 class Bg:
     def __init__(self):
         self.time = 600 # length of day/night in ticks
-        self.day = pygame.image.load("day.png")
-        self.night = pygame.image.load("night.png")
+        self.day = pygame.image.load("graphics/day.png")
+        self.night = pygame.image.load("graphics/night.png")
         self.surf = self.day
         self.offset = 0
         self.rect = self.surf.get_rect(x=-self.offset, centery = screen_size/2)
@@ -117,7 +117,7 @@ class Tree:
     def __init__(self):
         self.x = screen_size
         self.y = random.randint(0, screen_size)
-        self.surf = pygame.image.load("tree.png")
+        self.surf = pygame.image.load("graphics/tree.png")
         self.speed = abs(screen_size / 2 - self.y) / 10
         # ^ the further from the train, the faster it moves.
 
@@ -138,16 +138,16 @@ clock = pygame.time.Clock()
 screen_size = 800  # int(input("Enter screen size: "))
 screen = pygame.display.set_mode([screen_size, screen_size])
 # ^ allows for the screen to be resized while keeping aspect ratio
-font_big = pygame.font.Font("Bullpen3D.ttf", 64)
-font = pygame.font.Font("PlayfairDisplay-Regular.ttf", 28)
+font_big = pygame.font.Font("fonts/Bullpen3D.ttf", 64)
+font = pygame.font.Font("fonts/PlayfairDisplay-Regular.ttf", 28)
 
-heart = pygame.image.load("heart.png")
-arrow = pygame.image.load("arrow.png")
+heart = pygame.image.load("graphics/heart.png")
+arrow = pygame.image.load("graphics/arrow.png")
 
 pygame.mixer.init()
-menu_music = pygame.mixer.Sound("menu.mp3")
+menu_music = pygame.mixer.Sound("audio/menu.mp3")
 menu_music.play(loops=-1, fade_ms=100)
-game_music = pygame.mixer.Sound("main.mp3")
+game_music = pygame.mixer.Sound("audio/main.mp3")
 game_music.play(loops=-1, fade_ms=100)
 
 
@@ -256,7 +256,7 @@ while running:
 
     else:  # game = False
         # screen.fill((255, 255, 255))
-        menu_bg = pygame.image.load("menu.png")
+        menu_bg = pygame.image.load("graphics/menu.png")
         menu_bg_rect = menu_bg.get_rect(centerx=screen_size/2, centery=screen_size/2)
         screen.blit(menu_bg, menu_bg_rect)
 
