@@ -1,47 +1,21 @@
-**This list is not definitive and will be updated as the project goes on.**
+# Untitled Train Game
+The only thing better than the journey is the adventure.
 
-# To Do
+![Pygame logo](https://www.pygame.org/docs/_static/pygame_lofi.svg)
 
-## Under Consideration
-_(might be implemented in the future)_
-- Some form of GUI for control (tkinter, PyQT5, etc)
-- Randomise direction of enemies/points
-- Custom screen aspect ratio
-- Cleaner screen resizing
+## Description
+A scrappy Pygame project made in about 2 months. You take the role of a train conductor dodging spiders and grabbing passengers.
 
-## Planned
-_(will be implemented in the future)_
+My first attempt at Pygame, no tutorials used. All open-source.
 
-# In Progress
-- Overhauled graphics - colour scheme
+## Gameplay Instructions
+Hold spacebar to accelerate.
+Release to decelerate.
 
-# Done
-~~Rect.unionall() collision~~
+Collect passengers, avoid spiders.
 
-~~Difficulty increases as game goes on~~
+You start with three lives (or passengers, interpret how you will). Passengers give you a life. Spiders make you lose a life.
 
-~~Score display~~
+The journey may take multiple days in which the background alternates between day and night.
 
-~~Artwork~~
-
-~~Scrolling background and scenery~~
-
-~~Resizable screen (ish)~~
-
-~~Better scoring system~~
-
-~~Menu~~
-
-~~A name...~~
-
-~~Music~~
-
-~~Cleaner menu~~
-
-~~Better enemy : point spawn ratio~~
-
-~~Day-night cycle~~
-
-~~Clearer level transition~~
-  
-:octocat:
+Very little strategy involved. One button for accessibility. The highest score I have seen is 3042. Most average around 1200.
